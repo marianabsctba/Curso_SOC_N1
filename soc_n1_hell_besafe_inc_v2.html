@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SOC N1 HELL — Be Safe .Inc Academy</title>
+<style>
+:root{
+  --bg:#edf4f7;
+  --panel:#ffffff;
+  --panel2:#f5f9fb;
+  --panel3:#e7f2f5;
+  --text:#132033;
+  --muted:#607083;
+  --line:#c8d7df;
+  --accent:#0f766e;
+  --accent2:#14b8a6;
+  --accent3:#0891b2;
+  --danger:#dc2626;
+  --warn:#b45309;
+  --ok:#15803d;
+  --purple:#6d28d9;
+  --shadow:0 24px 80px rgba(15,23,42,.14);
+  --mono:"JetBrains Mono",Consolas,monospace;
+  --ui:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:Georgia,"Times New Roman",serif;
+}
+body.dark{
+  --bg:#06111f;
+  --panel:#0b1a2c;
+  --panel2:#12263c;
+  --panel3:#17314d;
+  --text:#eef7ff;
+  --muted:#9db1c7;
+  --line:#28435f;
+  --accent:#2dd4bf;
+  --accent2:#5eead4;
+  --accent3:#67e8f9;
+  --danger:#fb7185;
+  --warn:#fbbf24;
+  --ok:#4ade80;
+  --purple:#c084fc;
+  --shadow:0 24px 90px rgba(0,0,0,.48);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);line-height:1.62;
+  background-image:
+    radial-gradient(circle at 12% 0%, rgba(20,184,166,.18), transparent 30%),
+    radial-gradient(circle at 90% 6%, rgba(8,145,178,.18), transparent 30%);
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+code,pre,.mono{font-family:var(--mono)}
+.hidden{display:none!important}
+.top{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 16px;background:rgba(255,255,255,.84);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line)
+}
+.dark .top{background:rgba(6,17,31,.84)}
+.brand{display:flex;align-items:center;gap:9px;color:var(--accent);font-weight:950;letter-spacing:.2px}
+.live{width:10px;height:10px;border-radius:50%;background:var(--accent2);box-shadow:0 0 20px var(--accent2);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.35;transform:scale(.88)}}
+.topActions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--line);background:var(--panel);color:var(--text);
+  border-radius:13px;padding:10px 13px;font-weight:820;box-shadow:0 8px 20px rgba(0,0,0,.05)
+}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#041916;border-color:transparent}
+.btn.danger{border-color:var(--danger);color:var(--danger)}
+.btn.small{padding:7px 10px;font-size:12px}
+.hero{
+  padding:48px 18px 28px;border-bottom:1px solid var(--line)
+}
+.heroInner{max-width:1320px;margin:auto;display:grid;grid-template-columns:1.08fr .92fr;gap:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);overflow:hidden}
+.pad{padding:25px}
+.kicker{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:950;text-transform:uppercase;letter-spacing:1px}
+h1{font-size:clamp(36px,6vw,78px);line-height:.9;margin:12px 0 14px;letter-spacing:-2.5px}
+h2{font-size:clamp(22px,3vw,36px);line-height:1.06;margin:0 0 14px;letter-spacing:-.7px}
+h3{margin:20px 0 9px}
+p{margin:0 0 13px}.small{font-size:13px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+.stat{border:1px solid var(--line);border-radius:16px;padding:13px;background:var(--panel2)}
+.stat b{display:block;font-size:23px;color:var(--accent);font-family:var(--mono)}
+.stat small{color:var(--muted);font-size:11px;text-transform:uppercase;font-weight:850}
+.shell{font-family:var(--mono);font-size:13px;background:#050b12;color:#d1fae5;border-radius:16px;padding:14px;margin-top:16px;overflow:auto}
+input,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--panel2);color:var(--text)}
+.nameBox{display:grid;gap:8px;margin-top:18px}
+.main{max-width:1520px;margin:auto;padding:16px;display:grid;grid-template-columns:320px minmax(0,1fr) 455px;gap:16px;align-items:start}
+.side,.lab{position:sticky;top:74px;max-height:calc(100vh - 88px);overflow:auto}
+.progressOuter{height:13px;background:var(--panel2);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.progressInner{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent3),var(--purple));transition:.3s}
+.modBtn{
+  width:100%;text-align:left;margin:8px 0;padding:12px;border-radius:15px;border:1px solid var(--line);
+  background:var(--panel2);color:var(--text);font-weight:850
+}
+.modBtn.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(20,184,166,.16)}
+.modBtn.done::after{content:" ✓";color:var(--ok)}
+.modBtn.locked{opacity:.46;cursor:not-allowed}
+.contentHead{padding:20px 22px;background:var(--panel2);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}
+.badge{display:inline-flex;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 10px;font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:950}
+.lesson{padding:25px}
+.lesson p{text-align:justify}
+.lesson ul{margin-top:8px}.lesson li{margin:7px 0}
+.callout{border-left:5px solid var(--accent);background:var(--panel2);padding:16px;border-radius:16px;margin:16px 0}
+.warn{border-left-color:var(--warn)}
+.dangerCall{border-left-color:var(--danger)}
+.case{border:1px dashed var(--line);border-radius:18px;background:var(--panel2);padding:16px;margin:16px 0}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.flow div{border:1px solid var(--line);background:var(--panel2);border-radius:16px;padding:12px}
+.flow b{display:block;color:var(--accent);font-family:var(--mono);font-size:12px;margin-bottom:5px}
+.table{width:100%;border-collapse:collapse;margin:15px 0;font-size:14px}
+.table th,.table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}
+.table th{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--accent)}
+.terminal{background:#050b12;color:#d1fae5;border-radius:18px;overflow:hidden;border:1px solid #17324b}
+.termbar{display:flex;gap:7px;align-items:center;background:#0b1624;padding:10px 12px;border-bottom:1px solid #17324b}
+.dot{width:11px;height:11px;border-radius:50%}.r{background:#fb7185}.y{background:#fbbf24}.g{background:#34d399}
+.termTitle{margin-left:auto;font-family:var(--mono);font-size:11px;color:#9db1c8}
+.termOut{height:330px;overflow:auto;padding:14px;font-family:var(--mono);font-size:12.5px;white-space:pre-wrap}
+.termIn{display:flex;border-top:1px solid #17324b}
+.termIn span{font-family:var(--mono);padding:12px;color:#2dd4bf}
+.termIn input{border:0;border-radius:0;background:#050b12;color:#e8f2ff;font-family:var(--mono)}
+.goalsBox{display:grid;gap:9px;margin-top:10px}
+.goal{
+  display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:start;
+  padding:10px 11px;border:1px solid var(--line);border-radius:14px;background:var(--panel2);font-size:13px
+}
+.goal input{width:16px;height:16px;margin-top:3px;accent-color:var(--accent)}
+.goal code{
+  display:block;white-space:normal;overflow-wrap:anywhere;word-break:break-word;
+  line-height:1.45;background:rgba(20,184,166,.09);border:1px solid rgba(20,184,166,.20);
+  padding:7px 8px;border-radius:10px;color:var(--accent)
+}
+.quiz{padding:0 25px 25px}
+.q{border:1px solid var(--line);background:var(--panel2);border-radius:19px;padding:16px;margin:14px 0}
+.qText{font-weight:900;margin-bottom:10px}
+.opt{
+  padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin:8px 0;cursor:pointer;
+  min-height:76px;display:flex;align-items:center;font-size:14px
+}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--ok);background:rgba(21,128,61,.13)}
+.opt.wrong{border-color:var(--danger);background:rgba(220,38,38,.11)}
+.comment{display:none;margin-top:10px;color:var(--muted);font-size:13px}.comment.show{display:block}
+.finalPanel{padding:24px;border-top:1px solid var(--line);background:var(--panel2)}
+.certCard{display:none;max-width:980px;margin:22px auto;background:linear-gradient(135deg,#fbfbff,#e9fffb);color:#0f172a;border:10px solid #0f766e;border-radius:30px;padding:38px;text-align:center;box-shadow:var(--shadow)}
+.certCard h2{font-size:43px;margin:10px 0;color:#0f172a}.certName{font-size:30px;font-weight:950;color:#0f766e}.certCard.exporting .noExport{display:none!important}
+.seal{width:116px;height:116px;border-radius:50%;border:5px solid #0f766e;display:flex;align-items:center;justify-content:center;margin:18px auto;font-weight:950}
+.toast{position:fixed;right:16px;top:70px;background:#050b12;color:#fff;border:1px solid #17324b;border-radius:16px;padding:14px;max-width:440px;z-index:100;display:none;box-shadow:var(--shadow)}
+.toast.show{display:block}
+.footer{padding:18px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:1220px){.main{grid-template-columns:1fr}.side,.lab{position:relative;top:0;max-height:none}.heroInner{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){.top{align-items:flex-start;flex-direction:column}.stats{grid-template-columns:repeat(2,1fr)}.flow{grid-template-columns:1fr}.lesson,.quiz,.pad{padding:16px}.certCard{padding:20px;border-width:6px}.certCard h2{font-size:28px}.certName{font-size:22px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="live"></span> Be Safe .Inc SOC Academy</div>
+  <div class="topActions">
+    <button class="btn small" onclick="toggleTheme()">claro/escuro</button>
+    <button class="btn small" onclick="openHelp()">como funciona</button>
+    <button class="btn primary small" onclick="tryCertificate()">certificado</button>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <div class="heroInner">
+    <div class="card pad">
+      <div class="kicker">curso empresarial fictício • SOC N1 • ITIL • mão na massa</div>
+      <h1>SOC N1 HELL<br/>Be Safe .Inc</h1>
+      <p><b>Você é o novo analista N1 da Be Safe .Inc.</b> A empresa é fictícia, mas o caos é realista: SIEM barulhento, EDR dramático, VPN com login estranho, usuário clicando em e-mail bonito, gestor perguntando se “é grave mesmo” e ticket que precisa ser bom o bastante para N2, auditoria e negócio entenderem.</p>
+      <p>Este curso começa do zero: o que é SOC, por que existe, como funciona, como ITIL entra no fluxo, qual é o papel do N1, como classificar severidade, como escalar e como não transformar todo alerta em apocalipse corporativo.</p>
+      <div class="nameBox">
+        <label><b>Nome obrigatório para iniciar e emitir certificado</b></label>
+        <input id="studentName" placeholder="Digite seu nome completo"/>
+        <button class="btn primary" onclick="startCourse()">ENTRAR NO SOC DA BE SAFE .INC</button>
+      </div>
+      <div class="shell">soc-n1@besafe-inc:~$ ./plantao --evidencia --itil --cli --sem-achismo</div>
+    </div>
+    <div class="card pad">
+      <h2>O que esta versão entrega</h2>
+      <div class="stats">
+        <div class="stat"><b>14</b><small>capítulos</small></div>
+        <div class="stat"><b>56</b><small>tarefas CLI</small></div>
+        
+        <div class="stat"><b>PNG</b><small>certificado</small></div>
+      </div>
+      <div class="callout">
+        <b>Questões estilo vida real:</b> todas as alternativas são plausíveis, com tamanho equilibrado e sem resposta idiota. Uma é a mais correta pelo contexto, pelo papel do N1, pelo impacto, pela urgência e pela evidência disponível.
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="main hidden" id="app">
+  <aside class="card side">
+    <div class="pad">
+      <h3>Central de progresso</h3>
+      <p class="small" id="hello"></p>
+      <div class="progressOuter"><div class="progressInner" id="progress"></div></div>
+      <p class="small" id="progressText"></p>
+      <div id="moduleList"></div>
+      <button class="btn danger" style="width:100%;margin-top:10px" onclick="resetAll()">resetar curso</button>
+    </div>
+  </aside>
+
+  <section class="card">
+    <div class="contentHead">
+      <div><span class="badge" id="moduleBadge"></span><h2 id="moduleTitle"></h2><p class="small" id="moduleGoal"></p></div>
+      <span class="badge" id="moduleLevel"></span>
+    </div>
+    <article class="lesson" id="lesson"></article>
+    <section class="quiz" id="quiz"></section>
+    <div class="finalPanel">
+      <button class="btn" onclick="prevModule()">← anterior</button>
+      <button class="btn primary" onclick="validateModule()">validar capítulo</button>
+      <button class="btn" onclick="nextModule()">próximo →</button>
+      <p class="small" id="validationMsg"></p>
+    </div>
+    <div class="certCard" id="certificate"></div>
+  </section>
+
+  <aside class="card lab">
+    <div class="pad">
+      <h3>Console SOC / CLI obrigatória</h3>
+      <p class="small">Execute os comandos pedidos. O validador registra comandos aceitos. Comando errado também responde, porque ferramenta real raramente segura sua mão.</p>
+      <div class="terminal">
+        <div class="termbar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="termTitle">soc-console.besafe.inc</span></div>
+        <div class="termOut" id="termOut"></div>
+        <div class="termIn"><span>$</span><input id="cmdInput" autocomplete="off" onkeydown="if(event.key==='Enter')runCmd()"/></div>
+      </div>
+      <h3>Checklist CLI do capítulo</h3>
+      <div id="goals" class="goalsBox"></div>
+      <button class="btn" onclick="hintCmd()">dica do próximo comando</button>
+      <button class="btn danger" onclick="resetChapter()">refazer este capítulo</button>
+    </div>
+  </aside>
+</main>
+
+<div class="toast" id="toast"></div>
+<div class="footer">Mariana BS — Cybersecurity Engineer | Be Safe .Inc</div>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+const SALT="BE_SAFE_INC_SOC_N1_HELL_ITIL_2026_MARIANA_BS";
+function xor(s){let o=[];for(let i=0;i<s.length;i++)o.push((s.charCodeAt(i)^SALT.charCodeAt(i%SALT.length)).toString(16).padStart(2,"0"));return o.join("")}
+function dx(h){let s="";for(let i=0;i<h.length;i+=2)s+=String.fromCharCode(parseInt(h.slice(i,i+2),16)^SALT.charCodeAt((i/2)%SALT.length));return s}
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h+=(h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24)}return (h>>>0).toString(16)}
+function shuffle(arr,seed){let a=[...arr],h=parseInt(hash(seed).slice(0,8),16);for(let i=a.length-1;i>0;i--){h=(h*1664525+1013904223)>>>0;let j=h%(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+const answerKey={};
+function encAns(id, ans){answerKey[id]=xor(ans);return ans}
+const modules=[
+{id:"soc0",level:"Fundação",title:"O que é SOC e por que ele existe",goal:"Entender SOC, papéis, fluxo operacional, evidência e limites do N1.",cmds:["soc explain mission","case list open","playbook show triage","kpi show soc"],lesson:`<p><b>SOC</b> significa Security Operations Center. Na prática, é a função responsável por monitorar, detectar, analisar, priorizar, responder e escalar eventos de segurança. Ele existe porque empresas modernas geram log demais, alerta demais, ferramenta demais e certeza de menos.</p><p>Um SOC não é apenas uma sala com tela grande. Também não é um grupo de pessoas esperando ransomware aparecer igual trailer de filme. É um processo operacional contínuo que junta tecnologia, pessoas, procedimento, SLA, comunicação, evidência e tomada de decisão.</p><div class="flow"><div><b>Coleta</b>Logs de AD, EDR, firewall, cloud, e-mail, proxy, VPN e aplicações.</div><div><b>Correlação</b>SIEM/XDR cruza sinais para gerar alerta investigável.</div><div><b>Triagem</b>N1 qualifica contexto, severidade, evidência e impacto.</div><div><b>Resposta</b>N2/IR contém, erradica, recupera e documenta.</div></div><p>O analista N1 é a primeira camada humana do processo. Ele não precisa ser perito forense, arquiteto cloud e exorcista de PowerShell ao mesmo tempo. Mas precisa saber fazer perguntas boas, consultar logs, validar contexto, separar ruído de risco e escrever ticket que não pareça bilhete de sequestro operacional.</p><table class="table"><tr><th>Conceito</th><th>Definição prática</th></tr><tr><td>Evento</td><td>Registro bruto observado em log ou telemetria.</td></tr><tr><td>Alerta</td><td>Sinal gerado por regra, correlação ou ferramenta.</td></tr><tr><td>Incidente</td><td>Evento com impacto ou probabilidade relevante de impacto.</td></tr><tr><td>Crise</td><td>Incidente com impacto amplo, urgência executiva e coordenação formal.</td></tr></table><div class="callout"><b>Humor ácido, mas verdade:</b> alerta vermelho não é incidente confirmado. Às vezes é só uma ferramenta caríssima gritando porque alguém respirou perto da VPN.</div>`,q:{id:"q0",text:"No primeiro contato com um alerta crítico, qual postura representa melhor o papel do SOC N1?",ans:encAns("q0","b"),opts:[
+["a","Coletar contexto inicial, registrar evidências, validar impacto e manter o caso dentro do fluxo previsto."],
+["b","Qualificar o alerta com evidências mínimas, estimar impacto e acionar o playbook antes de escalar."],
+["c","Revisar sinais correlatos, comparar comportamento histórico e documentar uma hipótese operacional inicial."],
+["d","Confirmar a criticidade aparente, preservar registros e envolver o próximo nível quando houver sustentação."]
+],why:"Todas são boas práticas, mas a mais correta para N1 junta evidência mínima, impacto e playbook antes do escalonamento."}},
+{id:"itil1",level:"ITIL",title:"ITIL no SOC: incidente, prioridade, SLA e escalonamento",goal:"Aplicar impacto, urgência, prioridade, SLA e handoff sem confundir segurança com caos.",cmds:["itil define incident","priority calc impact=high urgency=medium","sla check BS-1042","handoff template n1-to-n2"],lesson:`<p>ITIL entra no SOC porque segurança também é operação. Quando um alerta vira incidente, alguém precisa saber prioridade, dono, SLA, fila, status, comunicação e critério de encerramento. Sem isso, o SOC vira grupo de WhatsApp com log anexado.</p><p>Em ITIL, incidente é interrupção ou redução de qualidade de serviço. No SOC, a leitura precisa considerar confidencialidade, integridade, disponibilidade, impacto regulatório, criticidade do ativo e risco de propagação.</p><table class="table"><tr><th>Termo</th><th>No SOC significa</th></tr><tr><td>Impacto</td><td>Quanto o negócio pode ser afetado.</td></tr><tr><td>Urgência</td><td>Quão rápido a ação precisa ocorrer.</td></tr><tr><td>Prioridade</td><td>Combinação de impacto e urgência.</td></tr><tr><td>SLA</td><td>Tempo acordado para resposta, atualização ou resolução.</td></tr><tr><td>Escalonamento</td><td>Transferência formal para quem tem autoridade ou profundidade técnica.</td></tr></table><div class="case"><b>Cenário:</b> login suspeito em conta financeira, origem incomum e EDR com execução suspeita. Impacto potencial alto. Urgência média-alta. Prioridade não vem da cor do alerta; vem do risco contextual.</div><p>O N1 precisa abrir ticket com status claro, evidências anexas, recomendação e próximo responsável. Escalonar sem contexto é terceirizar confusão.</p>`,q:{id:"q1",text:"Como ITIL ajuda um SOC N1 durante uma suspeita de comprometimento de conta sensível?",ans:encAns("q1","c"),opts:[
+["a","Organiza impacto, urgência, prioridade e SLA para orientar resposta e comunicação operacional."],
+["b","Ajuda a manter owner, status, evidências e critério de escalonamento formal do incidente."],
+["c","Combina impacto, urgência e evidência para priorizar o caso dentro do fluxo de atendimento."],
+["d","Padroniza ticket, handoff e acompanhamento para reduzir perda de contexto entre equipes."]
+],why:"Todas ajudam, mas a alternativa mais completa para decisão N1 é combinar impacto, urgência e evidência para priorização."}},
+{id:"triage2",level:"Triagem",title:"Anatomia de um alerta: do ruído à evidência",goal:"Investigar usuário, ativo, origem, destino, regra, timeline e hipótese.",cmds:["case open BS-1042","siem search alert_id=BS-1042","asset lookup FIN-023","ticket draft BS-1042"],lesson:`<p>A Be Safe .Inc recebeu o alerta BS-1042: 11 falhas de VPN, 1 sucesso, origem incomum, conta do financeiro e host FIN-023. Isso não confirma invasão, mas também não merece ser encerrado com “usuário digitou errado” como se o atacante tivesse mandado carta registrada.</p><p>A triagem N1 precisa responder: quem é o usuário, qual ativo está envolvido, qual origem, qual destino, qual regra disparou, qual janela temporal, qual comportamento histórico e qual evidência sustenta a hipótese.</p><div class="case"><b>Caso BS-1042</b><br/>Usuário: marta.financeiro<br/>Origem: 45.155.204.12<br/>Destino: VPN SSL<br/>Ativo associado: FIN-023<br/>Sinais: falhas repetidas, sucesso posterior, MFA não confirmado.</div><p>O ticket deve registrar o que foi visto e o que ainda precisa ser confirmado. Boa triagem não finge certeza; ela reduz incerteza.</p>`,q:{id:"q2",text:"Qual decisão inicial é mais apropriada para o alerta BS-1042?",ans:encAns("q2","a"),opts:[
+["a","Escalar como suspeita moderada, anexando falhas, sucesso posterior, origem incomum e pendência de MFA."],
+["b","Validar a origem, manter o usuário em observação e registrar a anomalia para revisão posterior."],
+["c","Abrir ticket com evidências de autenticação, ativo relacionado e solicitação de confirmação ao usuário."],
+["d","Correlacionar VPN, EDR e identidade antes de alterar a severidade operacional do caso."]
+],why:"Todas têm partes corretas, mas a primeira é a mais completa para o cenário: evidência, risco e pendência crítica de MFA."}},
+{id:"net3",level:"Rede",title:"Rede, DNS e conexões: onde o C2 se disfarça de normal",goal:"Ler conexões, DNS, proxy, ASN e sequência temporal.",cmds:["net connections FIN-023","dns lookup suspicious-cdn-update.net","geoip 45.155.204.12","proxy search user=marta.financeiro"],lesson:`<p>Rede é onde muita investigação começa a ganhar forma. Uma conexão 443 não é automaticamente legítima, assim como um domínio feio não é automaticamente malicioso. O analista N1 precisa olhar conjunto: domínio, IP, ASN, proxy, volume, frequência, processo, horário e relação com outros sinais.</p><div class="case">Após o login suspeito, FIN-023 resolveu <code>suspicious-cdn-update.net</code>, conectou em 45.155.204.12 e apresentou User-Agent incomum no proxy.</div><p>O objetivo não é declarar C2 com base em um ping triste. É enriquecer o caso para dizer: “temos conexão externa rara, infraestrutura sem relação com fornecedores, sequência temporal suspeita e processo associado”.</p>`,q:{id:"q3",text:"Qual conjunto de fatores pesa mais para elevar a suspeita de comunicação maliciosa?",ans:encAns("q3","d"),opts:[
+["a","Domínio raro, conexão externa e ausência de histórico corporativo observados na mesma janela do alerta."],
+["b","ASN desconhecido, User-Agent incomum e tráfego depois de autenticação fora do padrão."],
+["c","IP com reputação baixa, domínio recente e host financeiro envolvido no mesmo encadeamento."],
+["d","Correlação entre domínio raro, processo suspeito, origem incomum e sequência pós-login anômalo."]
+],why:"As quatro são plausíveis, mas a mais correta reúne processo, rede, origem e sequência temporal."}},
+{id:"win4",level:"Windows",title:"Windows Event IDs: não é bingo, é correlação",goal:"Correlacionar logon, processo, serviço, limpeza de log e timeline.",cmds:["event search host=FIN-023 id=4624","event search host=FIN-023 id=4688","event search host=FIN-023 id=7045","timeline build FIN-023"],lesson:`<p>Event ID não é para decorar como papagaio de certificação. O que importa é entender o papel de cada evento na história. 4624 indica logon bem-sucedido. 4625 indica falha. 4688 mostra processo criado. 7045 indica serviço instalado. 1102 indica log de auditoria limpo.</p><p>O poder está na timeline: login remoto, execução de PowerShell, criação de serviço e conexão externa em sequência curta contam uma história mais forte que qualquer evento isolado.</p><table class="table"><tr><th>ID</th><th>Uso na triagem</th></tr><tr><td>4624</td><td>logon bem-sucedido e tipo de logon</td></tr><tr><td>4625</td><td>falha de autenticação e origem</td></tr><tr><td>4688</td><td>criação de processo e linha de comando</td></tr><tr><td>7045</td><td>serviço criado, possível persistência</td></tr><tr><td>1102</td><td>limpeza de log, possível evasão</td></tr></table>`,q:{id:"q4",text:"Qual leitura é mais forte para justificar escalonamento técnico?",ans:encAns("q4","b"),opts:[
+["a","Logon remoto, processo PowerShell e criação de serviço avaliados em uma mesma janela temporal."],
+["b","Logon tipo 10, PowerShell codificado, serviço novo e conexão externa no mesmo encadeamento."],
+["c","Falhas de senha, sucesso posterior e execução local analisados com foco no usuário afetado."],
+["d","Processos incomuns, serviço recente e evento de rede correlacionados ao host financeiro."]
+],why:"Todas são defensáveis, mas a segunda explicita os sinais mais críticos e encadeados."}},
+{id:"siem5",level:"SIEM",title:"SIEM na prática: perguntar direito para não sofrer errado",goal:"Construir consultas por usuário, host, IP, janela, regra e recorrência.",cmds:["siem search user=marta.financeiro earliest=-24h","siem search src_ip=45.155.204.12","siem stats by host alert_id=BS-1042","siem export case=BS-1042"],lesson:`<p>SIEM não é oráculo. Ele devolve o que você consulta. Se a pergunta for ruim, a resposta será ruim com timestamp bonito. O N1 precisa começar amplo o bastante para ver contexto e estreitar o suficiente para não afogar o caso em ruído.</p><p>Boas pivotações: usuário em 24h, IP de origem em múltiplos usuários, host envolvido, regra disparada, eventos antes/depois, volume e recorrência.</p><div class="callout"><b>Regra prática:</b> nunca investigue só o alerta. Investigue o entorno do alerta. O crime raramente respeita o campo “description”.</div>`,q:{id:"q5",text:"Qual abordagem de SIEM é mais madura para triagem N1?",ans:encAns("q5","a"),opts:[
+["a","Pesquisar usuário, IP, host e janela temporal para entender recorrência e sequência do alerta."],
+["b","Consultar a regra disparada, validar ativos relacionados e exportar evidências para o ticket."],
+["c","Abrir pivôs por origem, destino e identidade antes de concluir se há incidente provável."],
+["d","Comparar o comportamento atual com histórico recente e anexar eventos relevantes ao caso."]
+],why:"Todas são boas, mas a primeira reúne os pivôs essenciais para a triagem inicial."}},
+{id:"mail6",level:"E-mail",title:"Phishing corporativo: e-mail bonito também mente",goal:"Analisar cabeçalho, SPF, DKIM, DMARC, URL, anexo e narrativa.",cmds:["mail header MSG-771","url detonate hxxps://beneficios-besafe.example","attachment inspect informe_beneficios.iso","spf check fake-rh.example"],lesson:`<p>O financeiro recebeu um e-mail de “recadastramento de benefícios”. O layout era bonito, a urgência era convincente e o domínio era quase igual ao real. Ou seja: o atacante teve mais capricho que muito portal interno.</p><p>O N1 deve analisar remetente real, Return-Path, SPF, DKIM, DMARC, URL, domínio recém-criado, anexo, sandbox e distribuição interna. O objetivo é classificar e orientar contenção: bloquear URL, remover mensagens, resetar credenciais, abrir IR se houver execução.</p><div class="case">MSG-771: Return-Path em domínio falso, SPF fail, DKIM ausente, DMARC fail, anexo ISO com LNK chamando PowerShell.</div>`,q:{id:"q6",text:"Qual conjunto sustenta melhor a classificação como phishing com risco de execução?",ans:encAns("q6","c"),opts:[
+["a","Falha de autenticação de e-mail, domínio parecido e narrativa urgente direcionada ao financeiro."],
+["b","URL recém-criada, remetente desalinhado e pedido de credencial em página de aparência corporativa."],
+["c","DMARC falho, anexo ISO com LNK, PowerShell acionado e distribuição para usuários sensíveis."],
+["d","Return-Path suspeito, sandbox com execução e conteúdo socialmente plausível para o contexto."]
+],why:"Todas indicam phishing, mas a terceira adiciona execução e usuários sensíveis, elevando risco."}},
+{id:"edr7",level:"EDR",title:"EDR/XDR: árvore de processo antes da histeria",goal:"Interpretar processo pai, filho, hash, prevalência, rede e isolamento.",cmds:["edr host FIN-023","process tree pid=4480","hash lookup 9f86d081884c7d659a2feaa0c55ad015","edr isolate --dry-run FIN-023"],lesson:`<p>EDR mostra telemetria. Analista transforma telemetria em decisão. No caso FIN-023, a árvore <code>WINWORD.EXE → powershell.exe → rundll32.exe</code> com conexão externa é forte demais para ser tratada como “coisa do Office”.</p><p>Mas isolamento deve ser proporcional: risco ativo, criticidade do host, impacto no negócio, evidência de execução e alternativa de contenção. N1 normalmente recomenda ou executa conforme playbook aprovado; não inventa contenção freestyle.</p>`,q:{id:"q7",text:"Qual cenário justifica melhor recomendar isolamento do endpoint?",ans:encAns("q7","d"),opts:[
+["a","Processo incomum com conexão externa, host sensível e baixa prevalência interna do artefato observado."],
+["b","Execução via Office, PowerShell codificado e comunicação externa em janela próxima ao phishing."],
+["c","Hash inconclusivo, árvore suspeita e usuário financeiro associado a alerta de identidade."],
+["d","Execução suspeita ativa, conexão externa, persistência possível e host crítico no mesmo encadeamento."]
+],why:"Todas são fortes, mas a última reúne atividade ativa, rede, persistência e criticidade."}},
+{id:"id8",level:"Identidade",title:"Identidade: o perímetro que virou senha cansada",goal:"Investigar MFA, grupos, privilégio, risky sign-in, OAuth e exceções.",cmds:["identity user marta.financeiro","identity mfa marta.financeiro","ad groups marta.financeiro","identity risky-signins marta.financeiro"],lesson:`<p>Identidade virou alvo principal porque é mais fácil roubar acesso que explorar kernel em dia de patch. Na Be Safe .Inc, a conta financeira tinha exceção antiga de MFA na VPN. “Temporário” em TI às vezes significa “até o incidente virar reunião”.</p><p>O N1 precisa olhar usuário, MFA, grupos, privilégios, dispositivos, localização, consentimento OAuth, sessão ativa e risco comportamental. Uma conta comum em grupo sensível pode ser mais crítica que uma conta admin sem uso no caso específico.</p>`,q:{id:"q8",text:"Qual evidência mais aumenta o risco de comprometimento de identidade?",ans:encAns("q8","b"),opts:[
+["a","Usuário de área sensível com login fora do padrão e necessidade de validação de sessão ativa."],
+["b","Exceção de MFA, acesso a pagamentos, origem incomum e sucesso após várias falhas de senha."],
+["c","Grupo financeiro, histórico de acesso remoto e sinalização de risky sign-in no provedor."],
+["d","Conta com privilégios relevantes, atividade noturna e ausência de confirmação do usuário."]
+],why:"Todas preocupam, mas a segunda combina controle ausente, privilégio, origem e padrão de ataque."}},
+{id:"cloud9",level:"Cloud",title:"Cloud e SaaS: o log existe, só falta alguém olhar",goal:"Triar AssumeRole, API, bucket, token, região e política.",cmds:["cloudtrail user temp.audit","cloudtrail event AssumeRole","s3 exposure check bsafe-finance","iam diff temp.audit"],lesson:`<p>Cloud não é magia. É infraestrutura com API, identidade, permissão e boleto. O SOC N1 precisa saber ler evento de cloud: quem fez, de onde, usando qual principal, em qual região, acessando qual recurso e com qual volume.</p><div class="case">A conta temporária <code>temp.audit</code> assumiu role de leitura financeira fora da janela aprovada. O bucket não é público, mas role abusada também vaza dado sem pedir licença ao ACL.</div><p>Escalar cloud sem trilha mínima é pedir para o time responder “manda evidência”. E eles estarão certos, o que é irritante.</p>`,q:{id:"q9",text:"Qual escalonamento cloud é mais útil para o próximo nível?",ans:encAns("q9","c"),opts:[
+["a","Informar usuário, role, região, recurso acessado e origem para validar se houve uso autorizado."],
+["b","Anexar CloudTrail, política alterada e janela de atividade para revisão do time responsável."],
+["c","Escalar com principal, AssumeRole, origem, recurso financeiro, alteração IAM e possível impacto."],
+["d","Registrar que o bucket não era público, mas houve acesso via permissão potencialmente abusada."]
+],why:"Todas ajudam, mas a terceira entrega cadeia de identidade, ação, recurso, mudança e impacto."}},
+{id:"ti10",level:"Threat Intel",title:"Threat Intelligence sem horóscopo de IOC",goal:"Usar IOC, reputação, prevalência e MITRE sem declarar certeza falsa.",cmds:["ti ip 45.155.204.12","ti domain suspicious-cdn-update.net","mitre map powershell rundll32","ioc package BS-1042"],lesson:`<p>Threat Intelligence é apoio, não sentença. IOC fora de contexto vira horóscopo técnico: “IP suspeito em Vênus, tendência a ransomware”. O N1 deve usar reputação, prevalência, idade do domínio, relação com campanha, TTPs e correlação interna.</p><p>MITRE ATT&CK ajuda a descrever comportamento: PowerShell pode apontar para execução, rundll32 para signed binary proxy execution, tráfego HTTPS para C2 ou exfiltração possível. Mas mapeamento não substitui evidência.</p>`,q:{id:"q10",text:"Como usar IOC de forma mais correta em triagem N1?",ans:encAns("q10","a"),opts:[
+["a","Como evidência auxiliar correlacionada com host, usuário, tempo, comportamento e telemetria interna."],
+["b","Como enriquecimento do alerta para priorizar investigação e orientar buscas adicionais no SIEM."],
+["c","Como contexto de reputação, prevalência e campanha, evitando conclusão sem sustentação local."],
+["d","Como parte do pacote de evidências, junto com eventos, processo, rede e hipótese técnica."]
+],why:"Todas são válidas, mas a primeira define o IOC como auxiliar e exige correlação local."}},
+{id:"vuln11",level:"Vulnerabilidade",title:"Vulnerabilidade no SOC: CVE não é troféu",goal:"Priorizar por exposição, exploração, criticidade, evidência e negócio.",cmds:["vuln asset WEB-07","cve explain CVE-2026-4242","exposure check WEB-07","risk score WEB-07"],lesson:`<p>Scanner encontra vulnerabilidade. SOC precisa entender risco. CVSS alto em ativo isolado pode ser menos urgente que CVSS médio explorado em aplicação exposta com dado sensível. Contexto ganha de número bonito.</p><div class="case">WEB-07 é exposto à internet, suporta portal de parceiros, possui exploit público simulado e recebeu payload compatível nos logs.</div><p>O N1 deve cruzar: exposição, exploitabilidade, tentativa observada, criticidade do ativo, compensating controls, WAF, patch disponível e janela de mudança. Aqui ITIL volta: corrigir pode exigir mudança emergencial, aprovação e comunicação.</p>`,q:{id:"q11",text:"Qual critério torna a vulnerabilidade mais urgente para o SOC?",ans:encAns("q11","d"),opts:[
+["a","Ativo exposto, exploit público e criticidade de negócio observados no inventário corporativo."],
+["b","Tentativa compatível em log, aplicação externa e ausência de mitigação efetiva confirmada."],
+["c","CVSS relevante, serviço publicado e evidência de varredura direcionada contra o endpoint."],
+["d","Exploit público, exposição externa, payload compatível e impacto relevante para o negócio."]
+],why:"Todas elevam risco, mas a última une exploração, exposição, evidência e impacto."}},
+{id:"ticket12",level:"Comunicação",title:"Ticket, handoff e evidência: o N2 não lê mente",goal:"Documentar resumo, hipótese, evidência, impacto, ações e recomendação.",cmds:["ticket create BS-1042","ticket add-evidence BS-1042","ticket severity BS-1042 medium","ticket escalate BS-1042"],lesson:`<p>Ticket bom é ferramenta de resposta. Ticket ruim é “verificar pfv” com print cortado. Na Be Safe .Inc, o N1 deve documentar de forma que N2, gestor e auditor entendam o que aconteceu, o que foi feito, o que falta e por que a severidade foi escolhida.</p><table class="table"><tr><th>Campo</th><th>Conteúdo esperado</th></tr><tr><td>Resumo</td><td>O que aconteceu em uma frase operacional.</td></tr><tr><td>Evidências</td><td>Logs, horários, usuários, ativos e fontes.</td></tr><tr><td>Hipótese</td><td>Interpretação com grau de confiança.</td></tr><tr><td>Ação</td><td>O que foi feito e o que é recomendado.</td></tr><tr><td>Handoff</td><td>Próximo time, motivo e urgência.</td></tr></table><div class="callout warn"><b>Realidade corporativa:</b> ticket mal escrito não só atrasa resposta. Ele também vira evidência de que o processo existe só para decorar auditoria.</div>`,q:{id:"q12",text:"Qual ticket representa melhor uma entrega N1 madura?",ans:encAns("q12","b"),opts:[
+["a","Resumo objetivo, ativos envolvidos, eventos relevantes e solicitação de validação pelo time responsável."],
+["b","Timeline, evidências, hipótese, impacto, severidade, ações realizadas e próximos passos claros."],
+["c","Descrição do alerta, contexto do usuário, recomendação de contenção e anexos exportados do SIEM."],
+["d","Registro da anomalia, justificativa da prioridade, owner sugerido e pendências para investigação."]
+],why:"Todas são melhores que ticket vazio, mas a segunda cobre o ciclo operacional completo."}},
+{id:"final13",level:"Final",title:"Simulado final: terça-feira corporativa do inferno",goal:"Correlacionar múltiplos alertas, ruído operacional, identidade, endpoint, web e backup.",cmds:["final start OMEGA","siem search case=OMEGA","edr host HR-014","identity user svc_print","final decision escalate"],lesson:`<p>O caso OMEGA mistura phishing, login anômalo, execução suspeita, tentativa web, backup barulhento e gestor querendo saber se “pode encerrar”. Vida real: nada vem com etiqueta “incidente principal”.</p><div class="case"><b>OMEGA</b><br/>HR-014 abriu anexo ISO. svc_print teve login interativo anômalo. WEB-07 recebeu payload compatível com exploração. Backup gerou tráfego alto validável. Usuário reportou MFA push não solicitado.</div><p>A resposta madura separa ruído de risco. Backup validado é ruído. Conta de serviço com login interativo, endpoint com execução e tentativa web compatível merecem escalonamento composto.</p>`,q:{id:"q13",text:"Qual decisão final é mais defensável para o caso OMEGA?",ans:encAns("q13","d"),opts:[
+["a","Escalar endpoint e identidade, mantendo web em observação até surgirem sinais adicionais consistentes."],
+["b","Tratar phishing e MFA como prioridade, registrando backup como ruído validado e web como hipótese."],
+["c","Abrir incidente para HR-014, svc_print e WEB-07, separando evidência confirmada de suspeita."],
+["d","Escalar incidente composto com identidade, endpoint e web, classificando backup como ruído validado."]
+],why:"Todas parecem aceitáveis, mas a quarta entrega decisão completa, separa ruído e cobre os três vetores relevantes."}}
+];
+const outputs={
+"help":"Comandos disponíveis variam por capítulo. Use a dica do próximo comando ou leia o checklist.",
+"soc explain mission":"SOC: monitorar, detectar, analisar, responder e escalar eventos de segurança com processo, evidência e SLA.",
+"case list open":"Casos abertos: BS-1042 suspicious_authentication, MSG-771 phishing, OMEGA multi-vector.",
+"playbook show triage":"Playbook triage: identificar alerta → validar contexto → enriquecer evidência → classificar prioridade → documentar → escalar/encerrar.",
+"kpi show soc":"KPIs: MTTD, MTTA, MTTR, taxa de falso positivo, backlog, SLA breach, qualidade de ticket e reincidência.",
+"itil define incident":"ITIL: incidente é interrupção ou redução de qualidade de serviço. No SOC, inclui risco relevante à confidencialidade, integridade ou disponibilidade.",
+"priority calc impact=high urgency=medium":"Prioridade calculada: P2. Impacto alto + urgência média. Exige atualização dentro do SLA definido.",
+"sla check BS-1042":"BS-1042: SLA de primeira resposta 15 min, atualização 30 min, escalonamento se evidência de execução ou acesso sensível.",
+"handoff template n1-to-n2":"Handoff: resumo, timeline, evidências, hipótese, impacto, ação tomada, pendência, owner sugerido e urgência.",
+"case open BS-1042":"CASE BS-1042 aberto. Categoria inicial: suspicious_authentication. Severidade inicial: medium.",
+"siem search alert_id=BS-1042":"11x VPN_FAIL + 1x VPN_SUCCESS para marta.financeiro. Origem: 45.155.204.12. Janela: 03:07-03:12 BRT.",
+"asset lookup FIN-023":"FIN-023 · Windows 11 · Financeiro · EDR ativo · Usuária primária: marta.financeiro · criticidade: alta.",
+"ticket draft BS-1042":"Rascunho criado com hipótese de credencial comprometida e pendência de validação MFA.",
+"net connections FIN-023":"FIN-023 -> 45.155.204.12:443 ESTABLISHED · processo relacionado: powershell.exe.",
+"dns lookup suspicious-cdn-update.net":"A 45.155.204.12 · domínio recente · TTL baixo · sem histórico corporativo.",
+"geoip 45.155.204.12":"ASN sem relação com fornecedores Be Safe .Inc · reputação baixa · múltiplos reports recentes.",
+"proxy search user=marta.financeiro":"Proxy: acesso a /beneficios/login, download informe_beneficios.iso, user-agent incomum.",
+"event search host=FIN-023 id=4624":"4624 Type 10 · Logon remoto · user=marta.financeiro · source=45.155.204.12.",
+"event search host=FIN-023 id=4688":"4688 · Parent WINWORD.EXE · Child powershell.exe · encoded command observado.",
+"event search host=FIN-023 id=7045":"7045 · Serviço novo: UpdateTelemetrySvc · binPath aponta para diretório de usuário.",
+"timeline build FIN-023":"03:12 VPN success → 03:17 ISO → 03:22 WINWORD → 03:23 powershell → 03:24 rundll32 → 03:25 conexão externa.",
+"siem search user=marta.financeiro earliest=-24h":"Atividade normal 08:00-18:40. Anomalia única às 03:12. MFA push não confirmado.",
+"siem search src_ip=45.155.204.12":"Mesmo IP tentou 3 usuários: marta.financeiro, carlos.rh, svc_print. 2 falhas, 1 sucesso.",
+"siem stats by host alert_id=BS-1042":"FIN-023 concentra eventos pós-login. HR-014 tem phishing relacionado. WEB-07 tem tentativa web separada.",
+"siem export case=BS-1042":"Export CSV/JSON gerado para anexar ao ticket.",
+"mail header MSG-771":"From exibido: RH Be Safe. Return-Path: fake-rh.example. SPF fail. DKIM none. DMARC fail.",
+"url detonate hxxps://beneficios-besafe.example":"Página clonada de login. Coleta usuário/senha. Certificado DV recente.",
+"attachment inspect informe_beneficios.iso":"ISO contém LNK chamando powershell com parâmetro codificado. Risco alto.",
+"spf check fake-rh.example":"SPF não autoriza origem observada. Alinhamento DMARC falhou.",
+"edr host FIN-023":"Alertas: suspicious powershell, rundll32 network connection, persistence service created.",
+"process tree pid=4480":"WINWORD.EXE -> powershell.exe -enc *** -> rundll32.exe -> conexão 45.155.204.12:443.",
+"hash lookup 9f86d081884c7d659a2feaa0c55ad015":"Hash sem prevalência interna. Reputação externa inconclusiva. Contexto comportamental permanece suspeito.",
+"edr isolate --dry-run FIN-023":"Dry-run: isolamento recomendado se sessão ativa ou execução persistente confirmada.",
+"identity user marta.financeiro":"Conta ativa. Grupo: Financeiro_Pagamentos. Acesso a share sensível. Última troca de senha: 189 dias.",
+"identity mfa marta.financeiro":"MFA habilitado, mas exceção legada para VPN SSL. O famoso temporário que envelheceu mal.",
+"ad groups marta.financeiro":"Financeiro_Pagamentos, ERP_ReadWrite, VPN_Users.",
+"identity risky-signins marta.financeiro":"Risco médio: unfamiliar sign-in properties + impossible travel suspeito.",
+"cloudtrail user temp.audit":"Usuário temporário criado para auditoria. Atividade fora da janela aprovada.",
+"cloudtrail event AssumeRole":"AssumeRole para FinanceReadOnlyRole originado de IP não corporativo.",
+"s3 exposure check bsafe-finance":"Bucket privado. Acesso via role. Sem public ACL. Risco: uso indevido de permissão.",
+"iam diff temp.audit":"Policy alterada há 2h: adicionada permissão s3:GetObject em prefixo financeiro.",
+"ti ip 45.155.204.12":"IOC baixa reputação, associado a scanners e campanhas de credential phishing. Use como apoio.",
+"ti domain suspicious-cdn-update.net":"Domínio recente, baixa prevalência e infraestrutura descartável.",
+"mitre map powershell rundll32":"Possível T1059 PowerShell, T1218 rundll32, T1071 web protocols.",
+"ioc package BS-1042":"Pacote IOC criado: IP, domínio, hash, URL, usuário, host e timestamps.",
+"vuln asset WEB-07":"WEB-07 exposto à internet. App parceiro. Scanner detectou CVE-2026-4242.",
+"cve explain CVE-2026-4242":"CVE fictícia didática: RCE semiautenticada em componente web. Exploit público simulado.",
+"exposure check WEB-07":"Exposto 443/TCP. Logs mostram payload compatível. Prioridade sobe por evidência real.",
+"risk score WEB-07":"Risco alto: exposição externa + exploit público + tentativa observada + criticidade de negócio.",
+"ticket create BS-1042":"Ticket criado com template SOC N1.",
+"ticket add-evidence BS-1042":"Evidências anexadas: SIEM, EDR, Identity, Proxy, Mail, TI.",
+"ticket severity BS-1042 medium":"Severidade medium aplicada com recomendação de elevar se sessão ativa/persistência confirmada.",
+"ticket escalate BS-1042":"Escalado para N2/IR com hipótese, evidências e próximos passos.",
+"final start OMEGA":"Simulado OMEGA iniciado. Há ruído de backup misturado com incidente real.",
+"siem search case=OMEGA":"Alertas correlacionados: phishing HR-014, login svc_print, tentativa WEB-07, tráfego backup validado.",
+"edr host HR-014":"HR-014 executou ISO via e-mail. Process tree suspeita. Usuário reportou MFA fatigue.",
+"identity user svc_print":"Conta de serviço com login interativo anômalo. Deve ser validada e possivelmente bloqueada.",
+"final decision escalate":"Decisão final registrada: escalar incidente composto e separar backup como ruído validado."
+};
+let state=JSON.parse(localStorage.getItem("socN1BeSafeIncV2")||'{"name":"","current":0,"done":{},"quiz":{},"cmds":{},"theme":"light","order":{}}');
+let current=state.current||0;
+if(state.theme==="dark")document.body.classList.add("dark");
+function save(){localStorage.setItem("socN1BeSafeIncV2",JSON.stringify(state))}
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),4600)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+function startCourse(){const n=document.getElementById("studentName").value.trim();if(!n){toast("Nome obrigatório, bebê. SOC sem identidade vira log órfão e log órfão só serve para auditor perguntar coisa.");return}state.name=n;save();document.getElementById("home").classList.add("hidden");document.getElementById("app").classList.remove("hidden");render()}
+function isUnlocked(i){if(i===0)return true;for(let x=0;x<i;x++)if(!state.done[modules[x].id])return false;return true}
+function render(){document.getElementById("hello").textContent=`Analista em plantão: ${state.name||"não identificado"}`;renderList();load(current);updateProgress();initTerm()}
+function renderList(){const box=document.getElementById("moduleList");box.innerHTML=modules.map((m,i)=>`<button class="modBtn ${i===current?'active':''} ${state.done[m.id]?'done':''} ${!isUnlocked(i)?'locked':''}" onclick="go(${i})">${String(i+1).padStart(2,"0")} · ${m.title}<br><span class="small">${m.level}</span></button>`).join("")}
+function go(i){if(!isUnlocked(i)){toast("Bloqueado. Primeiro termine o capítulo anterior. Aqui o SOC tem processo, não teletransporte pedagógico.");return}current=i;state.current=i;save();load(i);renderList();updateProgress()}
+function load(i){const m=modules[i];document.getElementById("moduleBadge").textContent=`Capítulo ${String(i+1).padStart(2,"0")}`;document.getElementById("moduleTitle").textContent=m.title;document.getElementById("moduleGoal").textContent=m.goal;document.getElementById("moduleLevel").textContent=m.level;document.getElementById("lesson").innerHTML=`${m.lesson}<div class="callout"><b>Prática obrigatória:</b> execute os comandos no console SOC, responda a questão e valide. Sem CLI, sem capítulo liberado, sem certificado. O mercado não precisa de analista que só sabe clicar em “próximo”.</div>`;renderQuiz(m);renderGoals();document.getElementById("validationMsg").textContent="";initTerm()}
+function renderGoals(){const m=modules[current];const done=state.cmds[m.id]||[];document.getElementById("goals").innerHTML=m.cmds.map(c=>`<label class="goal"><input type="checkbox" disabled ${done.includes(c)?'checked':''}/><code>${esc(c)}</code></label>`).join("")}
+function getOrder(m){if(!state.order[m.id]){state.order[m.id]=shuffle(["a","b","c","d"],state.name+m.id+SALT);save()}return state.order[m.id]}
+function renderQuiz(m){const saved=state.quiz[m.id];const q=m.q;const map=Object.fromEntries(q.opts);const order=getOrder(m);let html=`<h3>Validação técnica do capítulo</h3><div class="q"><div class="qText">${esc(q.text)}</div>`;order.forEach(letter=>{let cls=saved===letter?(dx(answerKey[q.id])===letter?'correct':'wrong'):"";html+=`<div class="opt ${cls}" onclick="answer('${m.id}','${letter}')">${esc(map[letter])}</div>`});html+=`<div class="comment ${saved?'show':''}">${esc(q.why)}</div></div>`;document.getElementById("quiz").innerHTML=html}
+function answer(mid,val){state.quiz[mid]=val;save();renderQuiz(modules[current]);updateProgress()}
+function initTerm(){const out=document.getElementById("termOut");out.innerHTML=`Be Safe .Inc SOC Console v2.0
+Caso ativo: ${modules[current].id.toUpperCase()} · ${modules[current].title}
+Digite 'help' ou execute os comandos obrigatórios do checklist.
+
+`;document.getElementById("cmdInput").focus()}
+function runCmd(){const inp=document.getElementById("cmdInput");const cmd=inp.value.trim();if(!cmd)return;inp.value="";const out=document.getElementById("termOut");out.innerHTML+=`$ ${esc(cmd)}\n`;const m=modules[current];if(m.cmds.includes(cmd)){state.cmds[m.id]=state.cmds[m.id]||[];if(!state.cmds[m.id].includes(cmd))state.cmds[m.id].push(cmd);save();out.innerHTML+=(outputs[cmd]||"OK")+"\n\n";renderGoals();updateProgress()}else{out.innerHTML+=(outputs[cmd]||"Comando executado, mas não satisfaz o checklist deste capítulo. Produção também aceita comando inútil; só não chama isso de progresso.")+"\n\n"}out.scrollTop=out.scrollHeight}
+function hintCmd(){const m=modules[current],done=state.cmds[m.id]||[],next=m.cmds.find(c=>!done.includes(c));toast(next?`Próximo comando sugerido: ${next}`:"Checklist CLI completo. Agora responda e valide o capítulo.")}
+function resetChapter(){const m=modules[current];delete state.done[m.id];delete state.quiz[m.id];state.cmds[m.id]=[];delete state.order[m.id];save();load(current);renderList();updateProgress();toast("Capítulo resetado. Sofrimento localizado, como prometido.")}
+function validateModule(){const m=modules[current];const done=state.cmds[m.id]||[];const missing=m.cmds.filter(c=>!done.includes(c));const qok=state.quiz[m.id]===dx(answerKey[m.q.id]);if(missing.length||!qok){document.getElementById("validationMsg").textContent=(missing.length?`Faltam comandos: ${missing.join(", ")}. `:"")+"Questão incorreta ou pendente. Refaz esse bloco, sem drama corporativo.";return}state.done[m.id]=true;save();document.getElementById("validationMsg").textContent="Capítulo validado. Próximo liberado.";renderList();updateProgress();toast("Validado. O N2 sentiu um raro momento de paz.")}
+function prevModule(){go(Math.max(0,current-1))}
+function nextModule(){if(current<modules.length-1)go(current+1);else tryCertificate()}
+function updateProgress(){const done=modules.filter(m=>state.done[m.id]).length;const pct=Math.round(done/modules.length*100);document.getElementById("progress").style.width=pct+"%";document.getElementById("progressText").textContent=`${done}/${modules.length} capítulos validados · ${pct}%`;renderGoals()}
+function score(){let ok=0;modules.forEach(m=>{if(state.quiz[m.id]===dx(answerKey[m.q.id]))ok++});return {ok,total:modules.length,pct:Math.round(ok/modules.length*100)}}
+function canCert(){return modules.every(m=>state.done[m.id])&&score().pct>=80}
+function tryCertificate(){if(!canCert()){toast(`Certificado bloqueado. Conclua todos os capítulos e atinja 80%. Nota atual: ${score().pct}%.`);return}showCert()}
+function showCert(){const c=document.getElementById("certificate");const sc=score();const d=new Date().toLocaleDateString("pt-BR");c.style.display="block";c.innerHTML=`<div class="kicker">Be Safe .Inc SOC Academy</div><h2>Certificado de Conclusão</h2><p>Certificamos que</p><div class="certName">${esc(state.name)}</div><p>concluiu o curso prático <b>SOC N1 HELL — Be Safe .Inc</b>, com fundamentos de SOC, ITIL aplicado, triagem, SIEM, EDR, identidade, phishing, cloud, vulnerabilidades, threat intelligence, ticket e escalonamento operacional.</p><div class="seal">SOC<br>N1</div><p><b>Carga horária:</b> 24 horas · <b>Aproveitamento:</b> ${sc.pct}% · <b>Data:</b> ${d}</p><p class="small">Mariana BS — Cybersecurity Engineer | Be Safe</p><div class="noExport"><button class="btn primary" onclick="downloadCert()">baixar certificado PNG</button></div>`;c.scrollIntoView({behavior:"smooth"})}
+function downloadCert(){const c=document.getElementById("certificate");c.classList.add("exporting");html2canvas(c,{backgroundColor:"#ffffff",scale:2}).then(canvas=>{const a=document.createElement("a");a.download="certificado-soc-n1-besafe-inc.png";a.href=canvas.toDataURL("image/png");a.click();c.classList.remove("exporting")}).catch(()=>{c.classList.remove("exporting");toast("Não consegui gerar o PNG neste navegador. Tente novamente ou use imprimir/salvar.")})}
+function resetAll(){if(confirm("Resetar todo o curso?")){localStorage.removeItem("socN1BeSafeIncV2");location.reload()}}
+function toggleTheme(){document.body.classList.toggle("dark");state.theme=document.body.classList.contains("dark")?"dark":"light";save()}
+function openHelp(){toast("Leia, execute CLI, responda, valide. Capítulo seguinte só abre depois. Certificado só no final. Sim, dá trabalho. Esse é literalmente o ponto.")}
+window.addEventListener("load",()=>{if(state.name){document.getElementById("studentName").value=state.name;document.getElementById("home").classList.add("hidden");document.getElementById("app").classList.remove("hidden");render()}});
+</script>
+</body>
+</html>
