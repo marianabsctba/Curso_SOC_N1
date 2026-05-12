@@ -147,6 +147,16 @@ input,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radiu
 .opt.correct{border-color:var(--ok);background:rgba(21,128,61,.13)}
 .opt.wrong{border-color:var(--danger);background:rgba(220,38,38,.11)}
 .comment{display:none;margin-top:10px;color:var(--muted);font-size:13px}.comment.show{display:block}
+.statusGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}
+.statusBox{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:12px;font-size:13px}
+.statusBox b{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--accent);margin-bottom:5px}
+.statusBox.ok{border-color:var(--ok);background:rgba(21,128,61,.10)}
+.statusBox.bad{border-color:var(--warn);background:rgba(180,83,9,.10)}
+.statusBox.err{border-color:var(--danger);background:rgba(220,38,38,.10)}
+.validationMsg{margin-top:12px;padding:12px;border-radius:15px;border:1px solid var(--line);background:var(--panel);font-size:13px}
+.validationMsg.ok{border-color:var(--ok);background:rgba(21,128,61,.10);color:var(--ok)}
+.validationMsg.err{border-color:var(--danger);background:rgba(220,38,38,.10);color:var(--danger)}
+@media(max-width:680px){.statusGrid{grid-template-columns:1fr}}
 .finalPanel{padding:24px;border-top:1px solid var(--line);background:var(--panel2)}
 .certCard{display:none;max-width:980px;margin:22px auto;background:linear-gradient(135deg,#fbfbff,#e9fffb);color:#0f172a;border:10px solid #0f766e;border-radius:30px;padding:38px;text-align:center;box-shadow:var(--shadow)}
 .certCard h2{font-size:43px;margin:10px 0;color:#0f172a}.certName{font-size:30px;font-weight:950;color:#0f766e}.certCard.exporting .noExport{display:none!important}
@@ -217,10 +227,14 @@ input,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radiu
     <article class="lesson" id="lesson"></article>
     <section class="quiz" id="quiz"></section>
     <div class="finalPanel">
+      <div class="statusGrid">
+        <div class="statusBox" id="cliStatus"><b>CLI obrigatória</b><span>Execute os comandos do checklist.</span></div>
+        <div class="statusBox" id="quizStatus"><b>Questão técnica</b><span>Escolha a alternativa mais correta.</span></div>
+      </div>
       <button class="btn" onclick="prevModule()">← anterior</button>
-      <button class="btn primary" onclick="validateModule()">validar capítulo</button>
+      <button class="btn primary" onclick="validateModule()">validar e liberar próximo capítulo</button>
       <button class="btn" onclick="nextModule()">próximo →</button>
-      <p class="small" id="validationMsg"></p>
+      <p class="validationMsg" id="validationMsg">Execute a CLI, responda a questão e clique em validar.</p>
     </div>
     <div class="certCard" id="certificate"></div>
   </section>
@@ -410,23 +424,67 @@ function isUnlocked(i){if(i===0)return true;for(let x=0;x<i;x++)if(!state.done[m
 function render(){document.getElementById("hello").textContent=`Analista em plantão: ${state.name||"não identificado"}`;renderList();load(current);updateProgress();initTerm()}
 function renderList(){const box=document.getElementById("moduleList");box.innerHTML=modules.map((m,i)=>`<button class="modBtn ${i===current?'active':''} ${state.done[m.id]?'done':''} ${!isUnlocked(i)?'locked':''}" onclick="go(${i})">${String(i+1).padStart(2,"0")} · ${m.title}<br><span class="small">${m.level}</span></button>`).join("")}
 function go(i){if(!isUnlocked(i)){toast("Bloqueado. Primeiro termine o capítulo anterior. Aqui o SOC tem processo, não teletransporte pedagógico.");return}current=i;state.current=i;save();load(i);renderList();updateProgress()}
-function load(i){const m=modules[i];document.getElementById("moduleBadge").textContent=`Capítulo ${String(i+1).padStart(2,"0")}`;document.getElementById("moduleTitle").textContent=m.title;document.getElementById("moduleGoal").textContent=m.goal;document.getElementById("moduleLevel").textContent=m.level;document.getElementById("lesson").innerHTML=`${m.lesson}<div class="callout"><b>Prática obrigatória:</b> execute os comandos no console SOC, responda a questão e valide. Sem CLI, sem capítulo liberado, sem certificado. O mercado não precisa de analista que só sabe clicar em “próximo”.</div>`;renderQuiz(m);renderGoals();document.getElementById("validationMsg").textContent="";initTerm()}
+function load(i){const m=modules[i];document.getElementById("moduleBadge").textContent=`Capítulo ${String(i+1).padStart(2,"0")}`;document.getElementById("moduleTitle").textContent=m.title;document.getElementById("moduleGoal").textContent=m.goal;document.getElementById("moduleLevel").textContent=m.level;document.getElementById("lesson").innerHTML=`${m.lesson}<div class="callout"><b>Prática obrigatória:</b> execute os comandos no console SOC, responda a questão e valide. Sem CLI, sem capítulo liberado, sem certificado. O mercado não precisa de analista que só sabe clicar em “próximo”.</div>`;renderQuiz(m);renderGoals();document.getElementById("validationMsg").textContent="Execute a CLI, responda a questão e clique em validar.";document.getElementById("validationMsg").className="validationMsg";initTerm();updateChapterStatus()}
 function renderGoals(){const m=modules[current];const done=state.cmds[m.id]||[];document.getElementById("goals").innerHTML=m.cmds.map(c=>`<label class="goal"><input type="checkbox" disabled ${done.includes(c)?'checked':''}/><code>${esc(c)}</code></label>`).join("")}
 function getOrder(m){if(!state.order[m.id]){state.order[m.id]=shuffle(["a","b","c","d"],state.name+m.id+SALT);save()}return state.order[m.id]}
 function renderQuiz(m){const saved=state.quiz[m.id];const q=m.q;const map=Object.fromEntries(q.opts);const order=getOrder(m);let html=`<h3>Validação técnica do capítulo</h3><div class="q"><div class="qText">${esc(q.text)}</div>`;order.forEach(letter=>{let cls=saved===letter?(dx(answerKey[q.id])===letter?'correct':'wrong'):"";html+=`<div class="opt ${cls}" onclick="answer('${m.id}','${letter}')">${esc(map[letter])}</div>`});html+=`<div class="comment ${saved?'show':''}">${esc(q.why)}</div></div>`;document.getElementById("quiz").innerHTML=html}
-function answer(mid,val){state.quiz[mid]=val;save();renderQuiz(modules[current]);updateProgress()}
+function answer(mid,val){state.quiz[mid]=val;save();renderQuiz(modules[current]);updateProgress();updateChapterStatus();const m=modules[current];const ok=state.quiz[mid]===dx(answerKey[m.q.id]);toast(ok?'Questão correta. Agora valide o capítulo.':'Essa alternativa é plausível, mas não é a mais correta para o cenário. Tenta outra.')}
 function initTerm(){const out=document.getElementById("termOut");out.innerHTML=`Be Safe .Inc SOC Console v2.0
 Caso ativo: ${modules[current].id.toUpperCase()} · ${modules[current].title}
 Digite 'help' ou execute os comandos obrigatórios do checklist.
 
 `;document.getElementById("cmdInput").focus()}
-function runCmd(){const inp=document.getElementById("cmdInput");const cmd=inp.value.trim();if(!cmd)return;inp.value="";const out=document.getElementById("termOut");out.innerHTML+=`$ ${esc(cmd)}\n`;const m=modules[current];if(m.cmds.includes(cmd)){state.cmds[m.id]=state.cmds[m.id]||[];if(!state.cmds[m.id].includes(cmd))state.cmds[m.id].push(cmd);save();out.innerHTML+=(outputs[cmd]||"OK")+"\n\n";renderGoals();updateProgress()}else{out.innerHTML+=(outputs[cmd]||"Comando executado, mas não satisfaz o checklist deste capítulo. Produção também aceita comando inútil; só não chama isso de progresso.")+"\n\n"}out.scrollTop=out.scrollHeight}
+function runCmd(){const inp=document.getElementById("cmdInput");const cmd=inp.value.trim();if(!cmd)return;inp.value="";const out=document.getElementById("termOut");out.innerHTML+=`$ ${esc(cmd)}\n`;const m=modules[current];if(m.cmds.includes(cmd)){state.cmds[m.id]=state.cmds[m.id]||[];if(!state.cmds[m.id].includes(cmd))state.cmds[m.id].push(cmd);save();out.innerHTML+=(outputs[cmd]||"OK")+"\n\n";renderGoals();updateProgress();updateChapterStatus()}else{out.innerHTML+=(outputs[cmd]||"Comando executado, mas não satisfaz o checklist deste capítulo. Produção também aceita comando inútil; só não chama isso de progresso.")+"\n\n"}out.scrollTop=out.scrollHeight}
 function hintCmd(){const m=modules[current],done=state.cmds[m.id]||[],next=m.cmds.find(c=>!done.includes(c));toast(next?`Próximo comando sugerido: ${next}`:"Checklist CLI completo. Agora responda e valide o capítulo.")}
 function resetChapter(){const m=modules[current];delete state.done[m.id];delete state.quiz[m.id];state.cmds[m.id]=[];delete state.order[m.id];save();load(current);renderList();updateProgress();toast("Capítulo resetado. Sofrimento localizado, como prometido.")}
-function validateModule(){const m=modules[current];const done=state.cmds[m.id]||[];const missing=m.cmds.filter(c=>!done.includes(c));const qok=state.quiz[m.id]===dx(answerKey[m.q.id]);if(missing.length||!qok){document.getElementById("validationMsg").textContent=(missing.length?`Faltam comandos: ${missing.join(", ")}. `:"")+"Questão incorreta ou pendente. Refaz esse bloco, sem drama corporativo.";return}state.done[m.id]=true;save();document.getElementById("validationMsg").textContent="Capítulo validado. Próximo liberado.";renderList();updateProgress();toast("Validado. O N2 sentiu um raro momento de paz.")}
+
+function updateChapterStatus(){
+  const m=modules[current];
+  const done=state.cmds[m.id]||[];
+  const missing=m.cmds.filter(c=>!done.includes(c));
+  const cli=document.getElementById("cliStatus");
+  const quiz=document.getElementById("quizStatus");
+  if(cli){
+    if(!missing.length){cli.className="statusBox ok";cli.innerHTML="<b>CLI obrigatória</b><span>Completa. Todos os comandos do checklist foram executados.</span>";}
+    else{cli.className="statusBox bad";cli.innerHTML=`<b>CLI obrigatória</b><span>${done.length}/${m.cmds.length} feitos. Falta: ${esc(missing[0])}${missing.length>1?` +${missing.length-1}`:""}</span>`;}
+  }
+  if(quiz){
+    const answered=!!state.quiz[m.id];
+    const qok=state.quiz[m.id]===dx(answerKey[m.q.id]);
+    if(qok){quiz.className="statusBox ok";quiz.innerHTML="<b>Questão técnica</b><span>Correta. Alternativa mais adequada selecionada.</span>";}
+    else if(answered){quiz.className="statusBox err";quiz.innerHTML="<b>Questão técnica</b><span>Respondida, mas ainda não é a melhor alternativa.</span>";}
+    else{quiz.className="statusBox bad";quiz.innerHTML="<b>Questão técnica</b><span>Pendente. Escolha uma alternativa.</span>";}
+  }
+}
+function validateModule(){
+  const m=modules[current];
+  const done=state.cmds[m.id]||[];
+  const missing=m.cmds.filter(c=>!done.includes(c));
+  const answered=!!state.quiz[m.id];
+  const qok=state.quiz[m.id]===dx(answerKey[m.q.id]);
+  const msg=document.getElementById("validationMsg");
+  updateChapterStatus();
+  if(missing.length||!qok){
+    const parts=[];
+    if(missing.length) parts.push(`CLI incompleta: faltam ${missing.length} comando(s): ${missing.join(", ")}.`);
+    if(!answered) parts.push("Questão pendente: escolha uma alternativa antes de validar.");
+    else if(!qok) parts.push("Questão incorreta: a alternativa escolhida é plausível, mas não é a melhor decisão para o cenário.");
+    msg.textContent=parts.join(" ")+" Sem isso, o próximo capítulo não libera.";
+    msg.className="validationMsg err";
+    return;
+  }
+  state.done[m.id]=true;
+  save();
+  msg.textContent="Capítulo validado. Próximo liberado. Agora sim, o SOC parou de te julgar por 3 segundos.";
+  msg.className="validationMsg ok";
+  renderList();
+  updateProgress();
+  updateChapterStatus();
+  toast("Validado. Pode avançar para o próximo capítulo.");
+}
 function prevModule(){go(Math.max(0,current-1))}
-function nextModule(){if(current<modules.length-1)go(current+1);else tryCertificate()}
-function updateProgress(){const done=modules.filter(m=>state.done[m.id]).length;const pct=Math.round(done/modules.length*100);document.getElementById("progress").style.width=pct+"%";document.getElementById("progressText").textContent=`${done}/${modules.length} capítulos validados · ${pct}%`;renderGoals()}
+function nextModule(){if(!state.done[modules[current].id]){toast('Antes de avançar, clique em validar e resolva o que aparecer em vermelho. O botão próximo não tem pacto com capítulo incompleto.');validateModule();return}if(current<modules.length-1)go(current+1);else tryCertificate()}
+function updateProgress(){const done=modules.filter(m=>state.done[m.id]).length;const pct=Math.round(done/modules.length*100);document.getElementById("progress").style.width=pct+"%";document.getElementById("progressText").textContent=`${done}/${modules.length} capítulos validados · ${pct}%`;renderGoals();updateChapterStatus()}
 function score(){let ok=0;modules.forEach(m=>{if(state.quiz[m.id]===dx(answerKey[m.q.id]))ok++});return {ok,total:modules.length,pct:Math.round(ok/modules.length*100)}}
 function canCert(){return modules.every(m=>state.done[m.id])&&score().pct>=80}
 function tryCertificate(){if(!canCert()){toast(`Certificado bloqueado. Conclua todos os capítulos e atinja 80%. Nota atual: ${score().pct}%.`);return}showCert()}
